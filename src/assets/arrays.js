@@ -24,3 +24,28 @@ export const placeholderRaceData = {
 };
 
 export const raceTypeUrls = ["practice-1", "practice-2", "practice-3"];
+
+export const raceNames = [
+  "Abu Dhabi",
+  "Austrailian",
+  "Azerbaijan",
+  "Bahrain",
+  "Belgian",
+  "Brazilian",
+  "British",
+  "Canadian",
+  "Dutch",
+  "Emilia Romagna",
+  "Hungarian",
+  "Italian",
+  "Japanese",
+  "Las Vegas",
+  "Mexican",
+  "Miami",
+  "Monaco",
+  "Qatar",
+  "Saudi Arabian",
+  "Singapore",
+  "Spanish",
+  "United States",
+];
