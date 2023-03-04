@@ -11,45 +11,16 @@ import {
 import "./App.css";
 import { db } from "./firebase";
 import { useState } from "react";
-
-const raceFiles = ["FP1", "FP2", "FP3", "Qualifying", "Race"];
-
-const placeholderRaceData = {
-  1: "",
-  2: "",
-  3: "",
-  4: "",
-  5: "",
-  6: "",
-  7: "",
-  8: "",
-  9: "",
-  10: "",
-  11: "",
-  12: "",
-  13: "",
-  14: "",
-  15: "",
-  16: "",
-  17: "",
-  18: "",
-  19: "",
-  20: "",
-};
+import { raceFiles, placeholderRaceData } from "./assets/arrays";
+import { addRace } from "./utils/databaseFunctions";
 
 function App() {
   const [raceName, setRaceName] = useState("");
 
-  const addRace = async () => {
-    //const raceRef = collection(db, `2023/Races/${raceName}`);
-    for (const raceFile of raceFiles) {
-      await setDoc(
-        doc(db, `2023/Races/${raceName}/${raceFile}`),
-        placeholderRaceData
-      );
-    }
-    console.log("Docs created for " + raceName + "Grand Prix");
+  const handleRaceAdd = async () => {
+    addRace(raceName);
   };
+
   const getRaces = async () => {
     //const raceRef = collection(db, "2023", "Races", "Bahrain");
     /*
@@ -88,12 +59,12 @@ function App() {
         <div>
           <input
             type="text"
-            id="raceName"
-            name="raceName"
+            id="raceNameInput"
+            name="raceNameInput"
             onChange={handleChange}
             value={raceName}
           />
-          <input type="button" onClick={addRace}></input>
+          <input type="button" onClick={handleRaceAdd} value="Add Race"></input>
         </div>
       </header>
     </div>
