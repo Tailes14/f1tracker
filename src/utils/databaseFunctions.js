@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, collection } from "firebase/firestore";
 import { raceFiles, placeholderRaceData } from "../assets/arrays";
 
 export const addRace = async (raceName) => {
