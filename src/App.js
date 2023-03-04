@@ -11,20 +11,36 @@ import {
 import "./App.css";
 import { db } from "./firebase";
 import { useState } from "react";
-import { raceFiles, placeholderRaceData, raceTypeUrls } from "./assets/arrays";
+import {
+  raceFiles,
+  placeholderRaceData,
+  raceTypeUrls,
+  raceNames,
+} from "./assets/arrays";
 import { addRace } from "./utils/databaseFunctions";
 import Select from "react-select";
+import { getRaceResults } from "./utils/raceResults";
 
 function App() {
-  const [raceName, setRaceName] = useState("");
+  const [addRaceName, setAddRaceName] = useState("");
+  const [selectRaceName, setSelectRaceName] = useState("");
+  const [selectRaceType, setSelectRaceType] = useState("");
   var raceTypeSelectOptions = [];
+  var raceNamesSelectOptions = [];
 
   for (const raceType of raceTypeUrls) {
     raceTypeSelectOptions.push({ value: raceType, label: raceType });
   }
+  for (const raceName of raceNames) {
+    raceNamesSelectOptions.push({ value: raceName, label: raceName });
+  }
 
   const handleRaceAdd = async () => {
-    addRace(raceName);
+    addRace(addRaceName);
+  };
+
+  const handleRaceUpdate = async () => {
+    getRaceResults(selectRaceName, selectRaceType);
   };
 
   const getRaces = async () => {
@@ -43,8 +59,16 @@ function App() {
     */
   };
 
-  const handleChange = (e) => {
-    setRaceName(e.target.value);
+  const handleRaceNameChange = (e) => {
+    setAddRaceName(e.target.value);
+  };
+
+  const handleSelectRaceNameChange = (e) => {
+    setSelectRaceName(e.value);
+  };
+
+  const handleSelectRaceTypeChange = (e) => {
+    setSelectRaceType(e.value);
   };
 
   return (
@@ -67,13 +91,25 @@ function App() {
             type="text"
             id="raceNameInput"
             name="raceNameInput"
-            onChange={handleChange}
-            value={raceName}
+            onChange={handleRaceNameChange}
+            value={addRaceName}
           />
           <input type="button" onClick={handleRaceAdd} value="Add Race"></input>
         </div>
         <div>
-          <Select options={raceTypeSelectOptions}></Select>
+          <Select
+            options={raceNamesSelectOptions}
+            onChange={handleSelectRaceNameChange}
+          ></Select>
+          <Select
+            options={raceTypeSelectOptions}
+            onChange={handleSelectRaceTypeChange}
+          ></Select>
+          <input
+            type="button"
+            onClick={handleRaceUpdate}
+            value="Update Race"
+          ></input>
         </div>
       </header>
     </div>
