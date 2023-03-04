@@ -96,7 +96,10 @@ def mapRaceNameNum(raceName):
 
 def scrapeResults(raceName, raceType):
     # getting the data from website
-    url = f"https://www.formula1.com/en/results.html/2023/races/{mapRaceNameNum(raceName)}/{raceName}/{raceType}.html"
+    raceName1 = raceName
+    if " " in raceName:
+        raceName1 = raceName.replace(" ", "-")
+    url = f"https://www.formula1.com/en/results.html/2023/races/{mapRaceNameNum(raceName)}/{raceName1}/{raceType}.html"
     page = requests.get(url)
     soup = BeautifulSoup(page.text, 'lxml')
     # finding the table with drivers and creating the dataframe
