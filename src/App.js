@@ -11,11 +11,17 @@ import {
 import "./App.css";
 import { db } from "./firebase";
 import { useState } from "react";
-import { raceFiles, placeholderRaceData } from "./assets/arrays";
+import { raceFiles, placeholderRaceData, raceTypeUrls } from "./assets/arrays";
 import { addRace } from "./utils/databaseFunctions";
+import Select from "react-select";
 
 function App() {
   const [raceName, setRaceName] = useState("");
+  var raceTypeSelectOptions = [];
+
+  for (const raceType of raceTypeUrls) {
+    raceTypeSelectOptions.push({ value: raceType, label: raceType });
+  }
 
   const handleRaceAdd = async () => {
     addRace(raceName);
@@ -65,6 +71,9 @@ function App() {
             value={raceName}
           />
           <input type="button" onClick={handleRaceAdd} value="Add Race"></input>
+        </div>
+        <div>
+          <Select options={raceTypeSelectOptions}></Select>
         </div>
       </header>
     </div>

@@ -22,3 +22,5 @@ export const placeholderRaceData = {
   19: "",
   20: "",
 };
+
+export const raceTypeUrls = ["practice-1", "practice-2", "practice-3"];
