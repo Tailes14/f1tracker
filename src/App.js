@@ -11,25 +11,41 @@ import {
 } from "firebase/firestore";
 import "./App.css";
 import { db } from "./firebase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   raceFiles,
   placeholderRaceData,
   raceTypeUrls,
   raceNames,
 } from "./assets/arrays";
-import { addRace } from "./utils/databaseFunctions";
+import { addRace, addBet } from "./utils/databaseFunctions";
 import Select from "react-select";
 import { getRaceResults } from "./utils/raceResults";
+import { todaysDate } from "./utils/utils";
 
 function App() {
   const [addRaceName, setAddRaceName] = useState("");
   const [selectRaceName, setSelectRaceName] = useState("");
   const [selectRaceType, setSelectRaceType] = useState("");
+  const [betData, setBetData] = useState([]);
+  const [newBet, setNewBet] = useState({
+    bet: "",
+    wager: 0,
+    odds: 0,
+    freeBet: false,
+    payOut: 0,
+    date: todaysDate(),
+    race: "",
+    outcome: "",
+  });
   var raceTypeSelectOptions = [];
   var raceNamesSelectOptions = [];
   var databaseSessions = [];
   var databaseData = [];
+
+  useEffect(() => {
+    getBetData();
+  }, []);
 
   for (const raceType of raceTypeUrls) {
     raceTypeSelectOptions.push({ value: raceType, label: raceType });
@@ -68,7 +84,37 @@ function App() {
     });
   };
 
-  getDataForTable();
+  //getDataForTable();
+
+  const getBetData = async () => {
+    const colRef = collection(db, "2023/Bets/Tailes");
+    const colSnap = await getDocs(colRef);
+
+    colSnap.forEach((doc) => {
+      setBetData([
+        {
+          bet: doc.id,
+          wager: doc.data()["Wager"],
+          odds: doc.data()["Odds"],
+          freeBet: doc.data()["FreeBet"],
+          payOut: doc.data()["Payout"],
+          date: doc.data()["Date"],
+          race: doc.data()["Race"],
+          outcome: doc.data()["Outcome"],
+        },
+      ]);
+    });
+  };
+
+  const handleChangeBetForm = (e) => {
+    const { name, value } = e.target;
+    setNewBet({ ...newBet, [name]: value });
+  };
+
+  const handleAddBet = async (e) => {
+    addBet(newBet);
+    e.preventDefault();
+  };
 
   return (
     <div className="App">
@@ -76,7 +122,7 @@ function App() {
         <h1>Formula 1 Database</h1>
       </header>
       <div>
-        <table>
+        <table id="Races">
           <thead>
             <tr>
               <th>Position</th>
@@ -110,6 +156,76 @@ function App() {
           value={addRaceName}
         />
         <input type="button" onClick={handleRaceAdd} value="Add Race"></input>
+      </div>
+      <div>
+        <h1>Bets</h1>
+        <table id="Bets">
+          <thead>
+            <tr>
+              <th>Bet</th>
+              <th>Wager</th>
+              <th>Odds</th>
+              <th>FreeBet</th>
+              <th>Race</th>
+              <th>Date</th>
+              <th>Payout</th>
+            </tr>
+          </thead>
+          <tbody>
+            {betData.map((bet, i) => {
+              return (
+                <tr key={i}>
+                  <td>{bet.bet}</td>
+                  <td>{bet.wager}</td>
+                  <td>{bet.odds}</td>
+                  {bet.freeBet ? <td>Yes</td> : <td>No </td>}
+                  <td>{bet.race}</td>
+                  <td>{}</td>
+                  <td>{bet.payOut}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <form onSubmit={handleAddBet}>
+          <label for="betName">
+            Bet Name:{" "}
+            <input type="text" name="bet" onChange={handleChangeBetForm} />
+          </label>
+          <label for="betWager">
+            Wager:{" "}
+            <input type="number" name="wager" onChange={handleChangeBetForm} />
+          </label>
+          <label for="betOdds">
+            Odds:{" "}
+            <input type="number" name="odds" onChange={handleChangeBetForm} />
+          </label>
+          <label for="betFreeBet">
+            Free Bet:{" "}
+            <input
+              type="checkbox"
+              name="freeBet"
+              onChange={handleChangeBetForm}
+            />
+          </label>
+          <label for="betRace">
+            Race: <Select options={raceNamesSelectOptions} />
+          </label>
+          <label for="betDate">
+            Date:{" "}
+            <input
+              type="date"
+              defaultValue={todaysDate()}
+              name="date"
+              onChange={handleChangeBetForm}
+            />
+          </label>
+          <label for="betPayout">
+            Payout:{" "}
+            <input type="number" name="payOut" onChange={handleChangeBetForm} />
+          </label>
+          <input type="submit" value="Add Bet" />
+        </form>
       </div>
       {/*<div>
           <Select
