@@ -55,3 +55,26 @@ export const raceNames = [
   "Spanish",
   "United States",
 ];
+
+export const driverNames = [
+  "Sergio Perez",
+  "Lewis Hamilton",
+  "George Russell",
+  "Oscar Piastri",
+  "Yuki Tsunoda",
+  "Nico Hulkenberg",
+  "Esteban Ocon",
+  "Nyck De Vries",
+  "Pierre Gasly",
+  "Logan Sargeant",
+  "Alexander Albon",
+  "Fernando Alonso",
+  "Carlos Sainz",
+  "Max Verstappen",
+  "Lando Norris",
+  "Charles Leclerc",
+  "Lance Stroll",
+  "Kevin Magnussen",
+  "Zhou Guanyu",
+  "Valtteri Bottas",
+];
