@@ -18,7 +18,11 @@ import {
   raceTypeUrls,
   raceNames,
 } from "./assets/arrays";
-import { addRace, addBet } from "./utils/databaseFunctions";
+import {
+  addRace,
+  addBet,
+  updateDriverPlacements,
+} from "./utils/databaseFunctions";
 import Select from "react-select";
 import { getRaceResults } from "./utils/raceResults";
 import { todaysDate } from "./utils/utils";
@@ -38,6 +42,8 @@ function App() {
     race: "",
     outcome: "",
   });
+  const [sessionsData, setSessionsData] = useState([]);
+  const [raceData, setRaceData] = useState([]);
   var raceTypeSelectOptions = [];
   var raceNamesSelectOptions = [];
   var databaseSessions = [];
@@ -45,6 +51,7 @@ function App() {
 
   useEffect(() => {
     getBetData();
+    getDataForTable();
   }, []);
 
   for (const raceType of raceTypeUrls) {
@@ -78,20 +85,26 @@ function App() {
     const colRef = collection(db, "2023/Races/Bahrain");
     const colSnap = await getDocs(colRef);
     colSnap.forEach((doc) => {
-      databaseSessions.push(doc.id);
-      databaseData.push(doc.data());
-      console.log(doc.id, "=>", doc.data());
+      setSessionsData((lastSession) => [
+        ...lastSession,
+        {
+          session: doc.id,
+          results: doc.data(),
+        },
+      ]);
+
+      //setRaceData((lastRace) => [...lastRace, doc.data()]);
     });
   };
 
   //getDataForTable();
-
   const getBetData = async () => {
     const colRef = collection(db, "2023/Bets/Tailes");
     const colSnap = await getDocs(colRef);
 
     colSnap.forEach((doc) => {
-      setBetData([
+      setBetData((lastBet) => [
+        ...lastBet,
         {
           bet: doc.id,
           wager: doc.data()["Wager"],
@@ -126,12 +139,16 @@ function App() {
           <thead>
             <tr>
               <th>Position</th>
-              {databaseSessions.map((session) => {
-                return <th>{session}</th>;
+              {sessionsData.map((val, key) => {
+                return <th key={key}>{val.session}</th>;
               })}
             </tr>
           </thead>
           <tbody>
+            {sessionsData.map((session, key) => {
+              //console.log(session.results);
+              return <tr key={session.session}>{key}</tr>;
+            })}
             {databaseData.map((val, key) => {
               return (
                 <tr key={key}>
