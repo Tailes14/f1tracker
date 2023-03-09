@@ -8,6 +8,7 @@ import {
   addDoc,
   getDoc,
   doc,
+  docRef,
 } from "firebase/firestore";
 import "./App.css";
 import { db } from "./firebase";
@@ -44,14 +45,38 @@ function App() {
   });
   const [sessionsData, setSessionsData] = useState([]);
   const [raceData, setRaceData] = useState([]);
+  const [driverPlacements, setDriverPlacements] = useState([]);
   var raceTypeSelectOptions = [];
   var raceNamesSelectOptions = [];
   var databaseSessions = [];
   var databaseData = [];
+  let driverData = {
+    1: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    2: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    3: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    4: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    5: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    6: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    7: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    8: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    9: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    10: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    11: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    12: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    13: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    14: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    15: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    16: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    17: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    18: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    19: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+    20: { FP1: "", FP2: "", FP3: "", Qualifying: "", Race: "" },
+  };
 
   useEffect(() => {
     getBetData();
-    getDataForTable();
+    //getDataForTable();
+    getDriverPlacements();
   }, []);
 
   for (const raceType of raceTypeUrls) {
@@ -119,6 +144,52 @@ function App() {
     });
   };
 
+  const getDriverPlacements = async () => {
+    const fp1Ref = doc(db, "2023/Races/Bahrain/FP1");
+    const fp2Ref = doc(db, "2023/Races/Bahrain/FP2");
+    const fp3Ref = doc(db, "2023/Races/Bahrain/FP3");
+    const qualRef = doc(db, "2023/Races/Bahrain/Qualifying");
+    const raceRef = doc(db, "2023/Races/Bahrain/Race");
+
+    const fp1Snap = await getDoc(fp1Ref);
+    const fp2Snap = await getDoc(fp2Ref);
+    const fp3Snap = await getDoc(fp3Ref);
+    const qualSnap = await getDoc(qualRef);
+    const raceSnap = await getDoc(raceRef);
+
+    const fp1Data = fp1Snap.data();
+    const fp2Data = fp2Snap.data();
+    const fp3Data = fp3Snap.data();
+    const qualData = qualSnap.data();
+    const raceData = raceSnap.data();
+
+    for (let i = 1; i < 21; i++) {
+      setDriverPlacements((lastPlacements) => [
+        ...lastPlacements,
+        {
+          place: i,
+          FP1: fp1Data[i],
+          FP2: fp2Data[i],
+          FP3: fp3Data[i],
+          Qualifying: qualData[i],
+          Race: raceData[i],
+        },
+      ]);
+    }
+
+    /*
+    for (const session of raceFiles) {
+      const docRef = doc(db, `2023/Races/Bahrain/${session}`);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        for (const place in data) {
+          driverData[place][session] = data[place];
+        }
+      }
+    }*/
+  };
+
   const handleChangeBetForm = (e) => {
     const { name, value } = e.target;
     setNewBet({ ...newBet, [name]: value });
@@ -139,15 +210,23 @@ function App() {
           <thead>
             <tr>
               <th>Position</th>
-              {sessionsData.map((val, key) => {
-                return <th key={key}>{val.session}</th>;
+              {raceFiles.map((val, key) => {
+                return <th key={key}>{val}</th>;
               })}
             </tr>
           </thead>
           <tbody>
-            {sessionsData.map((session, key) => {
-              //console.log(session.results);
-              return <tr key={session.session}>{key}</tr>;
+            {driverPlacements.map((val, key) => {
+              return (
+                <tr key={key}>
+                  <td>{val.place}</td>
+                  <td>{val.FP1}</td>
+                  <td>{val.FP2}</td>
+                  <td>{val.FP3}</td>
+                  <td>{val.Qualifying}</td>
+                  <td>{val.Race}</td>
+                </tr>
+              );
             })}
             {databaseData.map((val, key) => {
               return (
