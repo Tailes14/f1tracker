@@ -28,6 +28,7 @@ export const raceTypeUrls = [
   "practice-2",
   "practice-3",
   "qualifying",
+  "race-results",
 ];
 
 export const raceNames = [

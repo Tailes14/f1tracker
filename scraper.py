@@ -31,7 +31,8 @@ RACENAMES = [
     "Spanish",
     "United States",
 ]
-RACETYPEURLS = ["practice-1", "practice-2", "practice-3", "qualifying"]
+RACETYPEURLS = ["practice-1", "practice-2",
+                "practice-3", "qualifying", "race-results"]
 
 
 def mapRaceTypes(url):
@@ -43,6 +44,8 @@ def mapRaceTypes(url):
         return "FP3"
     elif url == "qualifying":
         return "Qualifying"
+    elif url == "race-results":
+        return "Race"
 
 
 def mapRaceNameNum(raceName):
